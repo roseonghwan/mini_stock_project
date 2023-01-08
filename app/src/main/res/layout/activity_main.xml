@@ -8,25 +8,40 @@
 
     <EditText
         android:id="@+id/search_et"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
+        android:hint="회사 검색1"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:text="회사 검색"
-        app:layout_constraintEnd_toStartOf="@+id/search_btn"
+        app:layout_constraintEnd_toStartOf="@+id/search2_et"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/search2_et"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="회사검색2"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/search_btn"
+        app:layout_constraintStart_toEndOf="@+id/search_et"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/search_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/search2_et"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
