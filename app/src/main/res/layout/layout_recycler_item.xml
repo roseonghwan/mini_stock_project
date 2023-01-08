@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,9 +17,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="PER"
-            android:textSize="20sp"
+            android:text=""
+            tools:text="PER"
+            android:textSize="18sp"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,28 +30,32 @@
             android:id="@+id/data_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="100"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="50dp"
-            android:text="7.9"
+            app:layout_constraintHorizontal_bias="0.35"
+            android:text=""
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dataName_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/data2_tv"
             android:layout_width="wrap_content"
+            app:layout_constraintHorizontal_bias="0.7"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="100dp"
-            android:text="7.9"
+            tools:text="7.9"
+            android:text=""
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/data_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/info_btn"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="end"

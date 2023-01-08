@@ -81,11 +81,9 @@ class MainActivity : AppCompatActivity() {
                 val iCode = iObj.get("corp_code").toString()
                 if(corp_txt == iName) {
                     Log.e("CODE", iCode)
-                    scope.launch {
-                        getFinanceInfo(dartRetrofit, iCode, 1)
-                        getDistributionStockInfo(dartRetrofit, iCode, 1)
-                        getPriceInfo(krxRetrofit, iName, 1)
-                    }
+                    getFinanceInfo(dartRetrofit, iCode, 1)
+                    getDistributionStockInfo(dartRetrofit, iCode, 1)
+                    getPriceInfo(krxRetrofit, iName, 1)
                     break
                 }
             }
@@ -95,16 +93,14 @@ class MainActivity : AppCompatActivity() {
                 val iCode = iObj.get("corp_code").toString()
                 if(corp_txt2 == iName) {
                     Log.e("CODE", iCode)
-                    scope.launch {
-                        getFinanceInfo(dartRetrofit, iCode, 2)
-                        getDistributionStockInfo(dartRetrofit, iCode, 2)
-                        getPriceInfo(krxRetrofit, iName, 2)
-                    }
+                    getFinanceInfo(dartRetrofit, iCode, 2)
+                    getDistributionStockInfo(dartRetrofit, iCode, 2)
+                    getPriceInfo(krxRetrofit, iName, 2)
                     break
                 }
             }
             scope.launch {
-                delay(2000)
+                delay(2500)
                 // 음... 왜 안바뀔까...
                 Log.e("모든 결과 실행 후...","유통주식수: $stock_cnt, 총자본: $tot_asset, 당기순이익: $dangi, 주식가격: $stock_price")
                 Log.e("모든 결과 실행 후2...","유통주식수: $stock_cnt2, 총자본: $tot_asset2, 당기순이익: $dangi2, 주식가격: $stock_price2")
@@ -132,16 +128,13 @@ class MainActivity : AppCompatActivity() {
                 modelList.add(MyModel("BPS", "$BPS", "$BPS2"))
                 modelList.add(MyModel("PBR", "$PBR", "$PBR2"))
                 modelList.add(MyModel("ROE", "$ROE", "$ROE2"))
-                modelList.add(MyModel("추가1", "추가정보1-1", "추가정보1-2"))
-                modelList.add(MyModel("추가2", "추가정보2-1", "추가정보2-2"))
-                modelList.add(MyModel("추가3", "추가정보3-1", "추가정보3-2"))
                 makeRecyclerView()
             }
         }
     }
     // 리사이클러뷰 표시
     private fun makeRecyclerView(){
-        val adapter = MyRecyclerViewAdapter()
+        val adapter = MyRecyclerViewAdapter(this)
         adapter.dataList = modelList
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
