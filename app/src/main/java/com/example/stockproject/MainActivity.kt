@@ -29,15 +29,17 @@ class MainActivity : AppCompatActivity() {
     private  val binding get() = mBinding!!
 
     var modelList = ArrayList<MyModel>()
-    var stock_price:Long = 0
     var dangi:Long = 0
     var tot_asset:Long = 0
     var stock_cnt:Long = 0
+    var stock_price: Long = 0
+    var tot_jasan: Long = 0
 
-    var stock_price2:Long = 0
     var dangi2:Long = 0
     var tot_asset2:Long = 0
     var stock_cnt2:Long = 0
+    var stock_price2: Long = 0
+    var tot_jasan2: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,76 +67,65 @@ class MainActivity : AppCompatActivity() {
         val code_data = JSONObject(corpor_json).getJSONObject("result")
         val listStore = code_data.getJSONArray("list")
 
-        val scope = CoroutineScope(Dispatchers.Main)
-
         // 회사 이름 검색 시 회사코드 가져오기
         search_btn.setOnClickListener(){
-            modelList = ArrayList<MyModel>()
+            modelList = ArrayList()
             val corp_txt:String = binding.searchEt.text.toString()
             val corp_txt2: String = binding.search2Et.text.toString()
+            // [corp_txt, corp_txt2]
+            val corp_name_list = arrayOf(corp_txt, corp_txt2)
+
             Log.e("click!!", listStore.length().toString() + corp_txt)
             Log.e("click2!!", listStore.length().toString() + corp_txt2)
+            for (i in 0..1){
+                for (j in 0 until listStore.length()){
+                    val iObj = listStore.getJSONObject(j)
+                    val iName = iObj.get("corp_name").toString()
+                    val iCode = iObj.get("corp_code").toString()
+                    if(corp_name_list[i] == iName) {
+                        Log.e("CODE", iCode)
+                        getFinanceInfo(dartRetrofit, iCode, i+1)
+                        getDistributionStockInfo(dartRetrofit, iCode, i+1)
+                        getPriceInfo(krxRetrofit, iName, i+1)
+                        break
+                    }
+                }
+            }
 
-            for (i in 0 until listStore.length()){
-                val iObj = listStore.getJSONObject(i)
-                val iName = iObj.get("corp_name").toString()
-                val iCode = iObj.get("corp_code").toString()
-                if(corp_txt == iName) {
-                    Log.e("CODE", iCode)
-                    getFinanceInfo(dartRetrofit, iCode, 1)
-                    getDistributionStockInfo(dartRetrofit, iCode, 1)
-                    getPriceInfo(krxRetrofit, iName, 1)
-                    break
-                }
-            }
-            for (i in 0 until listStore.length()){
-                val iObj = listStore.getJSONObject(i)
-                val iName = iObj.get("corp_name").toString()
-                val iCode = iObj.get("corp_code").toString()
-                if(corp_txt2 == iName) {
-                    Log.e("CODE", iCode)
-                    getFinanceInfo(dartRetrofit, iCode, 2)
-                    getDistributionStockInfo(dartRetrofit, iCode, 2)
-                    getPriceInfo(krxRetrofit, iName, 2)
-                    break
-                }
-            }
-            scope.launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 delay(2500)
-                // 음... 왜 안바뀔까...
                 Log.e("모든 결과 실행 후...","유통주식수: $stock_cnt, 총자본: $tot_asset, 당기순이익: $dangi, 주식가격: $stock_price")
                 Log.e("모든 결과 실행 후2...","유통주식수: $stock_cnt2, 총자본: $tot_asset2, 당기순이익: $dangi2, 주식가격: $stock_price2")
-                // EPS 주당 순이익
+                // EPS 주당 순이익, PER 주가수익 비율, BPS 주당 순가치, PBR 주가 순자산 비율, ROE 자기자본이익률
                 val EPS: Double = round((dangi.toDouble() / stock_cnt.toDouble()) * 100) / 100
-                // PER 주가수익 비율
                 val PER: Double = round((stock_price.toDouble() / EPS) * 100) / 100
-                // BPS 주당 순가치
                 val BPS: Double = round((tot_asset.toDouble() / stock_cnt.toDouble()) * 100) / 100
-                // PBR 주가 순자산 비율
                 val PBR: Double = round((stock_price.toDouble() / BPS) * 100) / 100
-                // ROE 자기자본이익률
                 val ROE: Double = round((dangi.toDouble() * 100 / tot_asset.toDouble()) * 100) / 100
+                val ROA: Double = round((dangi.toDouble() * 100 / tot_jasan.toDouble()) * 100) / 100
 
                 val EPS2: Double = round((dangi2.toDouble() / stock_cnt2.toDouble()) * 100) / 100
                 val PER2: Double = round((stock_price2.toDouble() / EPS2) * 100) / 100
                 val BPS2: Double = round((tot_asset2.toDouble() / stock_cnt2.toDouble()) * 100) / 100
                 val PBR2: Double = round((stock_price2.toDouble() / BPS2) * 100) / 100
                 val ROE2: Double = round((dangi2.toDouble() * 100 / tot_asset2.toDouble()) * 100) / 100
+                val ROA2: Double = round((dangi2.toDouble() * 100 / tot_jasan2.toDouble()) * 100) / 100
 
-                Log.e("최종 값...","EPS: $EPS, PER: $PER, BPS: $BPS, PBR: $PBR")
-                Log.e("최종 값2...","EPS2: $EPS2, PER2: $PER2, BPS2: $BPS2, PBR2: $PBR2")
-                modelList.add(MyModel("EPS", "$EPS", "$EPS2"))
+                modelList.add(MyModel("현재주가", "$stock_price", "$stock_price2"))
+               modelList.add(MyModel("EPS", "$EPS", "$EPS2"))
                 modelList.add(MyModel("PER", "$PER", "$PER2"))
                 modelList.add(MyModel("BPS", "$BPS", "$BPS2"))
                 modelList.add(MyModel("PBR", "$PBR", "$PBR2"))
                 modelList.add(MyModel("ROE", "$ROE", "$ROE2"))
+                modelList.add(MyModel("ROA", "$ROA", "$ROA2"))
+                modelList.add(MyModel("목표주가", "${round(PER * EPS *100) / 100}", "${round(PER2 * EPS2 * 100) / 100}"))
                 makeRecyclerView()
             }
         }
     }
     // 리사이클러뷰 표시
     private fun makeRecyclerView(){
-        val adapter = MyRecyclerViewAdapter(this)
+        val adapter = MyRecyclerViewAdapter(this, stock_price, stock_price2)
         adapter.dataList = modelList
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
@@ -153,6 +144,8 @@ class MainActivity : AppCompatActivity() {
                     val result_list = response.body()?.list
                     // 총 자본
                     val tot_capiital = stringToNum(result_list?.get(8)?.thstrm_amount.toString())
+                    // 총 자산
+                    val tot_san = stringToNum(result_list?.get(2)?.thstrm_amount.toString())
                     // 당기순이익
                     val accu_amount = stringToNum(result_list?.get(12)?.thstrm_add_amount.toString())
                     val cur_amout = stringToNum(result_list?.get(12)?.thstrm_amount.toString())
@@ -161,13 +154,15 @@ class MainActivity : AppCompatActivity() {
                     if(ord == 1){
                         dangi = accu_cur_amount
                         tot_asset = tot_capiital
+                        tot_jasan = tot_san
                     }
                     else{
                         dangi2 = accu_cur_amount
                         tot_asset2 = tot_capiital
+                        tot_jasan2 = tot_san
                     }
                     Log.e("총자본과 당기순이익", "$tot_capiital and $accu_cur_amount , ${tot_capiital.javaClass.name} and ${accu_cur_amount.javaClass.name}")
-                    Log.e("총자본과 당기순이익2", "$tot_asset and $dangi")
+                    Log.e("총자본과 당기순이익1", "$tot_asset and $dangi")
                     Log.e("총자본과 당기순이익2", "$tot_asset2 and $dangi2")
                 }
 
@@ -216,7 +211,7 @@ class MainActivity : AppCompatActivity() {
     private fun getPriceInfo (retrofit: Retrofit, name: String, ord: Int){
         val priceService: PriceService? = retrofit.create(PriceService::class.java)
         val krx_key = "B508AA1C5D9545478DABB1870B2E49A6A3FA28AD"
-        priceService?.getInfo(krx_key, "20230105")
+        priceService?.getInfo(krx_key, "20230109")
             ?.enqueue(object : Callback<PriceInfo>{
                 override fun onResponse(call: Call<PriceInfo>, response: Response<PriceInfo>) {
                     // ArrayList
@@ -224,10 +219,11 @@ class MainActivity : AppCompatActivity() {
                     for (i in result_list!!) {
                         if (i.ISU_NM == name) {
                             val price = i.TDD_CLSPRC
-                            if(ord == 1)
+                            if (ord == 1)
                                 stock_price = price.toLong()
                             else
                                 stock_price2 = price.toLong()
+
                             Log.e("Get PRICE", "$price, ${price.javaClass.name}")
                             Log.e("Get PRICE2", "${stock_price}")
                             Log.e("Get PRICE2", "${stock_price2}")
