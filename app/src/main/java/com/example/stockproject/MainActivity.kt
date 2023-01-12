@@ -20,6 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.round
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +29,8 @@ class MainActivity : AppCompatActivity() {
     private var mBinding: ActivityMainBinding? = null;
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재선언
     private  val binding get() = mBinding!!
-
+    var date = LocalDate.now()
+    var str_date = date.format(DateTimeFormatter.ofPattern("yyyyMMdd")).toInt() - 1
     var modelList = ArrayList<MyModel>()
     var dangi:Long = 0
     var tot_asset:Long = 0
@@ -211,9 +214,10 @@ class MainActivity : AppCompatActivity() {
     private fun getPriceInfo (retrofit: Retrofit, name: String, ord: Int){
         val priceService: PriceService? = retrofit.create(PriceService::class.java)
         val krx_key = "B508AA1C5D9545478DABB1870B2E49A6A3FA28AD"
-        priceService?.getInfo(krx_key, "20230109")
+        priceService?.getInfo(krx_key, str_date.toString())
             ?.enqueue(object : Callback<PriceInfo>{
                 override fun onResponse(call: Call<PriceInfo>, response: Response<PriceInfo>) {
+                    Log.e("Date", str_date.toString())
                     // ArrayList
                     val result_list = response.body()?.OutBlock_1
                     for (i in result_list!!) {
